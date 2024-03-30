@@ -1,0 +1,31 @@
+version: '3'
+
+services:
+  api:
+    build: ./api
+    ports:
+      - "8080:8080"
+  #   depends_on:
+  #     - rabbitmq
+  #     - postgres
+  #     - worker
+
+  # rabbitmq:
+  #   image: rabbitmq:latest
+  #   ports:
+  #     - "5673:5672"
+
+  # postgres:
+  #   image: postgres:latest
+  #   environment:
+  #     POSTGRES_DB: postgres
+  #     POSTGRES_USER: postgres
+  #     POSTGRES_PASSWORD: postgres
+  #   ports:
+  #     - "5432:5432"
+
+  # worker:
+  #   build: ./worker
+  #   depends_on:
+  #     - rabbitmq
+  #     - postgres
