@@ -6,8 +6,12 @@ from io import BytesIO
 import pika
 import json
 from datetime import datetime
+from config import Config
+import os
 
-logging.basicConfig(level=logging.INFO)
+
+c = Config()
+logging.basicConfig(level=c.get('logs', 'log_level'))
 
 logger = logging.getLogger(__name__)
 
@@ -43,7 +47,9 @@ def process_file(file_data: BytesIO, filename: str, metadata: dict):
     logger.info("Processing file: %s", filename)
     time = datetime.now()
     time_ext = time.strftime("%Y%m%d%H%M%S")
-    write_file_path = f"uploads/{time_ext}{filename}"
+    upload_path = c.get("volumes", "upload_path")
+    os.makedirs(upload_path, exist_ok=True)
+    write_file_path = f"{upload_path}/{time_ext}{filename}"
     metadata["write_file_path"] = write_file_path
     metadata["processed_start_time"] = time.isoformat()
     with open(write_file_path, "wb") as f:
@@ -52,15 +58,15 @@ def process_file(file_data: BytesIO, filename: str, metadata: dict):
     logger.info("File %s processed", filename)
     # Send metadata to RabbitMQ
     connection = pika.BlockingConnection(
-        pika.ConnectionParameters(host='rabbitmq')
+        pika.ConnectionParameters(host=c.get("rabbitmq", "host"))
     )
     channel = connection.channel()
 
-    channel.queue_declare(queue='upload')
+    channel.queue_declare(queue=c.get("rabbitmq", "write_queue"))
 
     channel.basic_publish(
         exchange='',
-        routing_key='upload',
+        routing_key=c.get("rabbitmq", "write_queue"),
         body=json.dumps(metadata)
     )
 

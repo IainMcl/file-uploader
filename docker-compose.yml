@@ -3,6 +3,8 @@ services:
     build: ./api
     ports:
       - "8080:8080"
+    volumes:
+      - shared_data:/shared_data
     depends_on:
       - rabbitmq
       #     - postgres
@@ -23,6 +25,11 @@ services:
 
   worker:
     build: ./worker
+    volumes:
+      - shared_data:/shared_data
     depends_on:
       - rabbitmq
       # - postgres
+
+volumes:
+  shared_data:

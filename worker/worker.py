@@ -8,7 +8,7 @@ import os
 import logging
 import pika
 from pika.adapters.blocking_connection import BlockingChannel
-from .config import Config
+from config import Config
 
 
 logger = logging.getLogger(__name__)
@@ -47,7 +47,7 @@ def main():
     logging.basicConfig(level=log_level)
     channel = conect(
         host=c.get('rabbitmq', 'host'),
-        quque_name=c.get('rabbitmq', 'queue')
+        quque_name=c.get('rabbitmq', 'read_queue')
     )
 
     def callback(ch, method, properties, body):
@@ -55,6 +55,11 @@ def main():
         logging.debug("Method: %s", method)
         logging.debug("Properties: %s", properties)
         logging.debug("Channel: %s", ch)
+
+        upload_path = c.get('volumes', 'upload_path')
+        # get all files in upload_path
+        files = os.listdir(upload_path)
+        logging.warning("Files in upload_path: %s", files)
 
     channel.basic_consume(
         queue='upload', on_message_callback=callback, auto_ack=True)
