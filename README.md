@@ -42,3 +42,21 @@ Docker
 Installation
 Clone the repository: https://github.com/IainMcl/file-uploader.git
 
+## RabbitMQ
+
+Messages are managed in RabbitMQ to be able to use the managment interface it needs to be started inside 
+the container which is inside the dev container. 
+
+View the current RabbitMQ status
+
+```bash
+docker exec -it <CONTAINER_ID> rabbitmqctl status
+```
+
+Enable managment ui
+
+```bash
+docker exec -it <CONTAINER_ID> rabbitmq-plugins enable rabbitmq_management
+```
+
+Default login credentials are `guest` `guest`.

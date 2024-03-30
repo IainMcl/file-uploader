@@ -1,20 +1,17 @@
-version: '3'
-
 services:
   api:
     build: ./api
     ports:
       - "8080:8080"
-  #   depends_on:
-  #     - rabbitmq
-  #     - postgres
-  #     - worker
+    depends_on:
+      - rabbitmq
+      #     - postgres
 
-  # rabbitmq:
-  #   image: rabbitmq:latest
-  #   ports:
-  #     - "5673:5672"
-
+  rabbitmq:
+    image: rabbitmq:3.13-management # TODO: Change back if being deployed# rabbitmq:latest
+    ports:
+      - "5672:5672"
+      - "15672:15672"
   # postgres:
   #   image: postgres:latest
   #   environment:
@@ -24,8 +21,8 @@ services:
   #   ports:
   #     - "5432:5432"
 
-  # worker:
-  #   build: ./worker
-  #   depends_on:
-  #     - rabbitmq
-  #     - postgres
+  worker:
+    build: ./worker
+    depends_on:
+      - rabbitmq
+      # - postgres

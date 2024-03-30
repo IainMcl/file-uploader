@@ -1,0 +1,21 @@
+{
+    "version": "0.2.0",
+    "configurations": [
+        {
+            "name": "FastAPI",
+            "type": "debugpy",
+            "request": "launch",
+            "program": "", // replace with the path to your FastAPI application file
+            "args": [
+                "uvicorn",
+                "api.app:app",
+                "--host",
+                "0.0.0.0",
+                "--port",
+                "8080",
+                "--reload"
+            ],
+            "console": "integratedTerminal",
+        }
+    ]
+}
